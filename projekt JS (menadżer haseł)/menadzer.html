@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="wyglad.css" rel="stylesheet">
+    <title>Menadżer haseł</title>
+</head>
+<body onload="init()">
+    <div class="centertext">
+    <h1>Lista haseł i loginów</h1>
+    <h2>Witaj! <span id="name"></span>, lista twoich haseł oraz loginów:</h2>
+    <div id="menadzer">
+    </div>
+    <h2>Tutaj wpisz swoje loginy oraz hasła jakie mają być zapisane:</h2>
+    <input type="text" name="" id="zadanie">
+    <button onclick="addZadanie()">Dodaj</button>
+    <footer>
+        <p>Stronę przygotował: Mateusz S.</p>
+    </footer>
+    </div>
+    <script>
+        function init() {
+            if (window.localStorage.getItem('name') === null) {
+                let name = window.prompt("Jak się nazywasz ? : ");
+                window.localStorage.setItem('name', name);
+            }
+            document.getElementById('name').innerHTML = window.localStorage.getItem('name');
+            showMenadzer();
+        }
+        function addZadanie() {
+            let zadanie = document.getElementById('zadanie').value;
+            let menadzer = JSON.parse(window.localStorage.getItem('menadzer'));
+            try {
+                menadzer.push(zadanie);
+            } catch {
+                menadzer = Array();
+                menadzer.push(zadanie);
+            }
+            window.localStorage.setItem('menadzer', JSON.stringify(menadzer));
+            document.getElementById('zadanie').value = "";
+            showMenadzer();
+        }
+        function showMenadzer() {
+            let zadanieArray = JSON.parse(window.localStorage.getItem('menadzer'));
+            if(zadanieArray === null) return;
+            let menadzer = document.getElementById('menadzer');
+            let htmlBuffer = "";
+            htmlBuffer += "<ul>";
+            for (let i = 0; i < zadanieArray.length; i++) {
+                htmlBuffer += "<li><button onclick=\"removeZadanie("+i+")\">Skasuj</button>" 
+                                + zadanieArray[i] + "</li>";
+            }
+            htmlBuffer += "</ul>";
+            menadzer.innerHTML = htmlBuffer;
+        }
+        function removeZadanie(i) {
+            let zadanieArray = JSON.parse(window.localStorage.getItem('menadzer'));
+            console.log(zadanieArray);
+            zadanieArray.splice(i, 1);
+            console.log(zadanieArray);
+            window.localStorage.setItem('menadzer', JSON.stringify(zadanieArray));
+            showMenadzer();
+        }
+    </script>
+</body>
+</html>
